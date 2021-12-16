@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="stylesheet" href="/styles/gallery.css" />
+		<title>Blog | Authors</title>
+	</head>
+	<body>
+		<nav>
+			<h1>Welcome to Blog App</h1>
+			<h4><%= user.username %></h4>
+			<ul>
+				<li>
+					<a href="/authors">Authors</a>
+				</li>
+				<li>
+					<a href="/authors/new">Add an Author</a>
+				</li>
+				<li>
+					<a href="/articles">Articles</a>
+				</li>
+			</ul>
+		</nav>
+		<main>
+			<h2>List of Authors</h2>
+
+			<div class="search_form">
+				<form action="" method="GET">
+					<input type="text" name="name" placeholder="Name" />
+					<input type="submit" value="Search" />
+				</form>
+				<a href="/authors">Clear Search</a>
+			</div>
+
+			<section class="gallery">
+				<% if(!authors.length) { %>
+				<p>There are no authors available yet.</p>
+				<% } %> <% authors.forEach(author => { %>
+				<a class="card" href="/authors/<%= author._id %>">
+					<div class="card__title"><%= author.name %></div>
+				</a>
+				<% })%>
+			</section>
+		</main>
+	</body>
+</html>

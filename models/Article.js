@@ -13,8 +13,5 @@ const articleSchema = new mongoose.Schema(
 	}
 );
 
-// model
-const Article = mongoose.model("Article", articleSchema);
-
 // export
-module.exports = Article;
+module.exports = mongoose.model("Article", articleSchema);
