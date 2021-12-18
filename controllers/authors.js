@@ -20,6 +20,7 @@ const idx = (req, res) => {
 		if (err) return res.send(err);
 
 		const context = { authors: allAuthors };
+
 		return res.render("authors/index", context);
 	});
 };
@@ -33,11 +34,25 @@ const newAuthor = (req, res) => {
 // Show
 
 const show = (req, res) => {
-	db.Author.findById(req.params.id, function (err, foundAuthor) {
+	db.Author.findById(req.params.id, (err, foundAuthor) => {
 		if (err) return res.send(err);
 
 		const context = { author: foundAuthor };
 		return res.render("authors/show", context);
+	});
+};
+
+const show = (req, res) => {
+	db.Game.findById(req.params.id, (err, foundGame) => {
+		if (err) {
+			console.log("Error in games#show:", err);
+
+			return res.send("Incomplete games#show controller function");
+		}
+
+		res.status(200).json({
+			game: foundGame,
+		});
 	});
 };
 
@@ -84,7 +99,7 @@ const update = (req, res) => {
 
 // Delete
 const destroy = (req, res) => {
-	db.Author.findByIdAndDelete(req.params.id, function (err, deletedAuthor) {
+	db.Author.findByIdAndDelete(req.params.id, (err, deletedAuthor) => {
 		if (err) return res.send(err);
 
 		return res.redirect("/authors");
@@ -94,8 +109,10 @@ const destroy = (req, res) => {
 // export router
 module.exports = {
 	idx,
+	newAuthor,
 	show,
 	create,
+	edit,
 	update,
 	destroy,
 };
