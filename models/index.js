@@ -1,18 +1,15 @@
+/* == Models index.js == */
+
 // Mongoose DB Config
 const mongoose = require("mongoose");
 // shortcut to mongoose.connection object, created by mongoose.connect
-const db = mongoose.connection;
+const database = mongoose.connection;
 // local DB
-const dbUrl = "URLHERE";
-const configs = {
-	useCreateIndex: true,
-	useFindAndModify: false,
-};
 mongoose
-	.connect(process.env.DATABASE_URL || dbUrl, configs)
+	.connect(process.env.DATABASE_URL)
 	.then(() =>
 		console.log(
-			`MongoDB successfully connected at ${db.host}:${db.port}! How dope!`
+			`MongoDB successfully connected at ${database.host}:${database.port}! How dope!`
 		)
 	)
 	.catch((err) => console.log(`MongoDB connection FAILED :( Error: ${err}`));
