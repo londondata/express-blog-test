@@ -63,20 +63,17 @@ const create = (req, res) => {
 	//mongoose
 	db.Article.create(req.body, (err, createdArticle) => {
 		if (err) res.send(err);
-
-	// allow us to add an article to the author
-		db.Author
-			.findById(createdArticle.author)
-			.exec((err, foundAuthor)
-			=> {
+		// allow us to add an article to the author
+		db.Author.findById(createdArticle.author).exec(function (err, foundAuthor) {
 			if (err) res.send(err);
 			// update the author articles array
 			foundAuthor.articles.push(createdArticle); // adds the article to the author
 			foundAuthor.save(); // saves to db
 
-		res.redirect("/articles");
+			res.redirect("/articles");
+		});
 	});
-});
+};
 
 // Edit
 
