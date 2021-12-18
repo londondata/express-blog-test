@@ -26,7 +26,7 @@ const idx = (req, res) => {
 };
 
 // New
-
+// Author does not depend on article to exist, so this does not change
 const newAuthor = (req, res) => {
 	res.render("authors/new");
 };
@@ -34,16 +34,21 @@ const newAuthor = (req, res) => {
 // Show
 
 const show = (req, res) => {
-	db.Author.findById(req.params.id, (err, foundAuthor) => {
-		if (err) res.send(err);
+	db.Author.findById(req.params.id)
+		// .populate(resource key to populate) -> turn ids into the data from their model
+		// basically db.Article.find() all of the articles (plural) attached to that Author resource) by automatically replacin the specified paths in the document with document(s) from other collections
+		.populate("articles")
+		//exec executes the query
+		.exec((err, foundAuthor) => {
+			if (err) res.send(err);
 
-		const context = { author: foundAuthor };
-		res.render("authors/show", context);
-	});
+			const context = { author: foundAuthor };
+			res.render("authors/show", context);
+		});
 };
 
 // Create
-
+// Author does not depend on article to exist, so this does not change
 const create = (req, res) => {
 	//mongoose
 	db.Author.create(req.body, (err, createdAuthor) => {

@@ -7,6 +7,8 @@ const articleSchema = new Schema(
 	{
 		title: { type: String, required: true },
 		body: { type: String, required: true },
+		// referenced relationship
+		author: { type: mongoose.Schema.Types.ObjectId, ref: "Author" },
 	},
 	{
 		timestamps: true,

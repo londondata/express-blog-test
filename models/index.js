@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 // shortcut to mongoose.connection object, created by mongoose.connect
 const database = mongoose.connection;
 // local DB
+
 mongoose
 	.connect(process.env.DATABASE_URL)
 	.then(() =>

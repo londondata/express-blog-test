@@ -8,6 +8,8 @@ const authorSchema = new mongoose.Schema(
 			type: String,
 			required: [true, "You must provide a name property"],
 		},
+		// author schema references the article schema
+		articles: [{ type: mongoose.Schema.Types.ObjectId, ref: "Article" }],
 	},
 	{
 		timestamps: true,

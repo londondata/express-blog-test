@@ -34,18 +34,27 @@ const idx = (req, res) => {
 // New
 
 const newArticle = (req, res) => {
-	res.render("articles/new");
+	// giving the new ejs template access to all authors for the article reference
+	db.Author.find({}, (err, foundAuthors) => {
+		if (err) res.send(err);
+
+		const context = { authors: foundAuthors };
+	});
+	res.render("articles/new", context);
 };
 
 // Show
 
 const show = (req, res) => {
-	db.Article.findById(req.params.id, (err, foundArticle) => {
-		if (err) res.send(err);
-
-		const context = { article: foundArticle };
-		res.render("articles/show", context);
-	});
+	// .populate(key to populate) -> turn ids into the data from their model
+	db.Article.findById(req.params.id)
+		.populate("author") // basically db.Author.findById(), lets you reference documents in other collections by automatically replacin the specified paths in the document with document(s) from other collections
+		//exec executes the query
+		.exec((err, foundArticle) => {
+			if (err) res.send(err);
+			const context = { article: foundArticle };
+			res.render("articles/show", context);
+		});
 };
 
 // Create
@@ -55,18 +64,28 @@ const create = (req, res) => {
 	db.Article.create(req.body, (err, createdArticle) => {
 		if (err) res.send(err);
 
+	// allow us to add an article to the author
+		db.Author
+			.findById(createdArticle.author)
+			.exec((err, foundAuthor)
+			=> {
+			if (err) res.send(err);
+			// update the author articles array
+			foundAuthor.articles.push(createdArticle); // adds the article to the author
+			foundAuthor.save(); // saves to db
+
 		res.redirect("/articles");
 	});
-};
+});
 
 // Edit
 
 const edit = (req, res) => {
 	db.Article.findById(req.params.id, (err, foundArticle) => {
-		if (err) res.send(err);
+		if (err) return res.send(err);
 
 		const context = { article: foundArticle };
-		res.render("articles/edit", context);
+		returnres.render("articles/edit", context);
 	});
 };
 
