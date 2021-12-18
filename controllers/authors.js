@@ -15,13 +15,13 @@ const db = require("../models");
 // Index
 
 const idx = (req, res) => {
-	// mongoose
-	db.Author.find({}, function (err, allAuthors) {
-		if (err) return res.send(err);
+	// mongoose syntax
+	db.Author.find({}, (err, allAuthors) => {
+		if (err) res.send(err);
 
 		const context = { authors: allAuthors };
 
-		return res.render("authors/index", context);
+		res.render("authors/index", context);
 	});
 };
 
@@ -35,24 +35,10 @@ const newAuthor = (req, res) => {
 
 const show = (req, res) => {
 	db.Author.findById(req.params.id, (err, foundAuthor) => {
-		if (err) return res.send(err);
+		if (err) res.send(err);
 
 		const context = { author: foundAuthor };
-		return res.render("authors/show", context);
-	});
-};
-
-const show = (req, res) => {
-	db.Game.findById(req.params.id, (err, foundGame) => {
-		if (err) {
-			console.log("Error in games#show:", err);
-
-			return res.send("Incomplete games#show controller function");
-		}
-
-		res.status(200).json({
-			game: foundGame,
-		});
+		res.render("authors/show", context);
 	});
 };
 
@@ -60,21 +46,21 @@ const show = (req, res) => {
 
 const create = (req, res) => {
 	//mongoose
-	db.Author.create(req.body, function (err, createdAuthor) {
-		if (err) return res.send(err);
+	db.Author.create(req.body, (err, createdAuthor) => {
+		if (err) res.send(err);
 
-		return res.redirect("/authors");
+		res.redirect("/authors");
 	});
 };
 
 // Edit
 
 const edit = (req, res) => {
-	db.Author.findById(req.params.id, function (err, foundAuthor) {
-		if (err) return res.send(err);
+	db.Author.findById(req.params.id, (err, foundAuthor) => {
+		if (err) res.send(err);
 
 		const context = { author: foundAuthor };
-		return res.render("authors/edit", context);
+		res.render("authors/edit", context);
 	});
 };
 
@@ -88,11 +74,13 @@ const update = (req, res) => {
 				...req.body,
 			},
 		},
+		// create new object in the database
 		{ new: true },
-		function (err, updatedAuthor) {
-			if (err) return res.send(err);
+		// callback function
+		(err, updatedAuthor) => {
+			if (err) res.send(err);
 
-			return res.redirect(`/authors/${updatedAuthor._id}`);
+			res.redirect(`/authors/${updatedAuthor._id}`);
 		}
 	);
 };
@@ -100,9 +88,9 @@ const update = (req, res) => {
 // Delete
 const destroy = (req, res) => {
 	db.Author.findByIdAndDelete(req.params.id, (err, deletedAuthor) => {
-		if (err) return res.send(err);
+		if (err) res.send(err);
 
-		return res.redirect("/authors");
+		res.redirect("/authors");
 	});
 };
 

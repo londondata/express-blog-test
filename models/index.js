@@ -17,6 +17,17 @@ mongoose
 	)
 	.catch((err) => console.log(`MongoDB connection FAILED :( Error: ${err}`));
 
-module.exports = {
-	Author: require("./Author"),
-};
+// module.exports = {
+// 	Author: require("./Author"),
+// 	Article: require("./Article"),
+// };
+
+const db = module.exports;
+
+db.Author = require("./Author");
+db.Article = require("./Article");
+
+/*
+module.exports.Author = require("./Author");
+module.exports.Article = require("./Article");
+*/
