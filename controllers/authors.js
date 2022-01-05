@@ -37,6 +37,7 @@ const show = (req, res) => {
 	db.Author.findById(req.params.id)
 		// .populate(resource key to populate) -> turn ids into the data from their model
 		// basically db.Article.find() all of the articles (plural) attached to that Author resource) by automatically replacin the specified paths in the document with document(s) from other collections
+		//.populate populates show page with all articles on show page for authors. the string it takes in is the key that we're populating from the schema (not the model)
 		.populate("articles")
 		//exec executes the query
 		.exec((err, foundAuthor) => {
@@ -70,18 +71,20 @@ const edit = (req, res) => {
 };
 
 // Update
-
+// logic to PUT/REPLACE data in the database
 const update = (req, res) => {
 	db.Author.findByIdAndUpdate(
 		req.params.id,
 		{
 			$set: {
+				// name: req.body.name
+				// additional key:value pairs from model
 				...req.body,
 			},
 		},
 		// create new object in the database
 		{ new: true },
-		// callback function
+		// callback function after the update has completed
 		(err, updatedAuthor) => {
 			if (err) res.send(err);
 
@@ -91,11 +94,19 @@ const update = (req, res) => {
 };
 
 // Delete
+// this is a cascade delete, finding all articles by the same author and deleting them, because we're deleting the author. this is essentially about database memory and storage, deleting all associated resources. since the author is the one in the one to many, we have to delete the many when we delete the one.
 const destroy = (req, res) => {
 	db.Author.findByIdAndDelete(req.params.id, (err, deletedAuthor) => {
 		if (err) res.send(err);
 
-		res.redirect("/authors");
+		db.Article.deleteMany(
+			{ author: deletedAuthor._id },
+			(err, deletedArticles) => {
+				if (err) return res.send(err);
+
+				res.redirect("/authors");
+			}
+		);
 	});
 };
 

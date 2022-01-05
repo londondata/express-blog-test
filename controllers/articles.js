@@ -64,11 +64,12 @@ const create = (req, res) => {
 	db.Article.create(req.body, (err, createdArticle) => {
 		if (err) res.send(err);
 		// allow us to add an article to the author
+		//.exec short for execute. used to help stack functions. similar to .then. after this query, exectute this one!
 		db.Author.findById(createdArticle.author).exec(function (err, foundAuthor) {
 			if (err) res.send(err);
 			// update the author articles array
 			foundAuthor.articles.push(createdArticle); // adds the article to the author
-			foundAuthor.save(); // saves to db
+			foundAuthor.save(); // saves relationship to database and commits to memory
 
 			res.redirect("/articles");
 		});
@@ -93,12 +94,14 @@ const update = (req, res) => {
 		req.params.id,
 		{
 			$set: {
+				// title: req.body
+				// body: req.body
 				...req.body,
 			},
 		},
 		// create new object in the database
 		{ new: true },
-		// callback function
+		// callback function after the update has completed
 		(err, updatedArticle) => {
 			if (err) res.send(err);
 
@@ -113,7 +116,14 @@ const destroy = (req, res) => {
 	db.Article.findByIdAndDelete(req.params.id, (err, deletedArticle) => {
 		if (err) res.send(err);
 
-		res.redirect("/articles");
+		// we find the author, take the author, remove the article from the author so that we remove the ID that we put into the array from memory.
+
+		db.Author.findById(deletedArticle.author, (err, foundAuthor) => {
+			foundAuthor.articles.remove(deletedArticle);
+			foundAuthor.save();
+
+			res.redirect("/articles");
+		});
 	});
 };
 
