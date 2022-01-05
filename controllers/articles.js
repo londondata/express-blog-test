@@ -39,8 +39,8 @@ const newArticle = (req, res) => {
 		if (err) res.send(err);
 
 		const context = { authors: foundAuthors };
+		res.render("articles/new", context);
 	});
-	res.render("articles/new", context);
 };
 
 // Show
@@ -83,7 +83,7 @@ const edit = (req, res) => {
 		if (err) return res.send(err);
 
 		const context = { article: foundArticle };
-		returnres.render("articles/edit", context);
+		res.render("articles/edit", context);
 	});
 };
 
